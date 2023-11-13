@@ -1,6 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.ProductDto;
+import com.example.ecommerce.mappers.ProductMapper;
 import com.example.ecommerce.model.Category;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.repository.CategoryRepository;
@@ -39,20 +40,11 @@ public class ProductServiceImpl implements  ProductService {
        return productRepository.save(product);
     }
 
-    public ProductDto maptoProductDto(Product product){
-        ProductDto productDto = new ProductDto();
-        productDto.setId(product.getId());
-        productDto.setImageUrl(product.getImageUrl());
-        productDto.setCategoryId(product.getCategory().getId());
-        productDto.setProductName(product.getProductName());
-        productDto.setDescription(product.getDescription());
-        productDto.setPrice(product.getPrice());
-        return productDto;
-    }
+
 
     public List<ProductDto> getAllProducts(){
         List<Product> products = productRepository.findAll();
-       return products.stream().map(this::maptoProductDto).collect(Collectors.toList());
+       return products.stream().map(ProductMapper::maptoProductDto).collect(Collectors.toList());
     }
 
     @Override
@@ -65,7 +57,7 @@ public class ProductServiceImpl implements  ProductService {
         updatedProduct.setImageUrl(productDto.getImageUrl());
         updatedProduct.setPrice(productDto.getPrice());
         productDto.setCategoryId(productDto.getCategoryId());
-        return maptoProductDto(productRepository.save(updatedProduct));
+        return ProductMapper.maptoProductDto(productRepository.save(updatedProduct));
 
     }
 
@@ -73,7 +65,7 @@ public class ProductServiceImpl implements  ProductService {
     public ProductDto getProduct(String productId)  {
         Optional<Product> product =productRepository.findById(productId);
         if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
-        return maptoProductDto(product.get());
+        return ProductMapper.maptoProductDto(product.get());
     }
 
     @Override
