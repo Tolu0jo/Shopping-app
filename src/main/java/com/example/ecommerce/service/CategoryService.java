@@ -9,7 +9,7 @@ public interface CategoryService {
     Category createCategory(Category category);
     List<Category> getCategories();
     Optional<Category> getCategory(String id);
-    Category updateCategory(String id,Category category
+    Category updateCategory(Category existingCategory,Category category
     );
     void deleteCategory(String id);
 }

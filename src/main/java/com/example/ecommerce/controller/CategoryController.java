@@ -1,6 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Category;
+import com.example.ecommerce.repository.CategoryRepository;
 import com.example.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,13 @@ import java.util.Optional;
 @RequestMapping("api/category")
 public class CategoryController {
 
-   private final CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    private final CategoryRepository categoryRepository;
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository) {
         this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping("/create")
@@ -34,19 +38,23 @@ public class CategoryController {
     @GetMapping("/list/{id}")
     public ResponseEntity<Optional<Category>> getCategory(@PathVariable String id){
         Optional<Category> category= categoryService.getCategory(id);
-        if(category.isEmpty()) return new ResponseEntity<>(category,HttpStatus.NOT_FOUND);
+        if(category.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(category);
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable String id, @RequestBody Category category){
-        Category updatedCategory = categoryService.updateCategory(id,category);
+        Optional<Category> existingCategory = categoryRepository.findById(id);
+         if(existingCategory.isEmpty()) return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Category updatedCategory = categoryService.updateCategory(existingCategory.get(),category);
         return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("delete/{id}")
-    public String deleteCategory(@PathVariable String id){
+    public ResponseEntity<Category> deleteCategory(@PathVariable String id){
+        Optional<Category> existingCategory = categoryRepository.findById(id);
+        if(existingCategory.isEmpty()) return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         categoryService.deleteCategory(id);
-        return "Deleted Successfully !!!";
+        return  new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

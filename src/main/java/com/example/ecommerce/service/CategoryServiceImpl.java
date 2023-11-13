@@ -32,16 +32,11 @@ public class CategoryServiceImpl implements  CategoryService {
     }
 
     @Override
-    public Category updateCategory(String id, Category category) {
-        Optional<Category> category1 = getCategory(id);
-        if (category1.isPresent()) {
-          Category existingCategory= category1.get();
+    public Category updateCategory(Category existingCategory, Category category) {
           existingCategory.setCategoryName(category.getCategoryName());
           existingCategory.setDescription(category.getDescription());
           existingCategory.setImageUrl(category.getImageUrl());
         return categoryRepository.save(existingCategory);
-        }
-       return null;
     }
 
     @Override
