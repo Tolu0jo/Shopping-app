@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity(name="users")
 public class User {
@@ -13,6 +14,7 @@ public class User {
     private String id;
 
     @NotNull
+    @UniqueElements
     private String email;
 
 

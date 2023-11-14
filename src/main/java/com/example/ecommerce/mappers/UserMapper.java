@@ -2,6 +2,7 @@ package com.example.ecommerce.mappers;
 
 import com.example.ecommerce.dto.ProductDto;
 import com.example.ecommerce.dto.SignUpDto;
+import com.example.ecommerce.dto.UserDto;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.model.User;
 
@@ -14,4 +15,12 @@ public class UserMapper {
         signUpDto.setPassword(user.getPassword());
         return signUpDto;
     }
+    public static UserDto maptoUserDto(User user){
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUserName(user.getUserName());
+        userDto.setEmail(user.getEmail());
+        return userDto;
+    }
+
 }
