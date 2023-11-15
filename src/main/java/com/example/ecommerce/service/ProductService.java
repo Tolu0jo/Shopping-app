@@ -7,12 +7,14 @@ import com.example.ecommerce.model.Product;
 import java.util.List;
 
 public interface ProductService {
-Product createProduct(ProductDto productDto);
+Product createProduct(String categoryId,ProductDto productDto);
 
 List<ProductDto> getAllProducts();
 
 ProductDto updateProduct(String productId, ProductDto productDto);
 ProductDto getProduct(String productId);
+
+Product getProductDetails(String productId);
 
 void deleteProduct(String productId);
 }

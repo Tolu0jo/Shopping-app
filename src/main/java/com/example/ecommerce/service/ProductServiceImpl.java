@@ -27,9 +27,9 @@ public class ProductServiceImpl implements  ProductService {
 
 
     @Override
-    public Product createProduct(ProductDto productDto) {
+    public Product createProduct(String categoryId,ProductDto productDto) {
 
-        Optional<Category> existingCategory= categoryRepository.findById(productDto.getCategoryId());
+        Optional<Category> existingCategory= categoryRepository.findById(categoryId);
         if(existingCategory.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Category not found");
         Product product = new Product();
         product.setProductName(productDto.getProductName());
@@ -51,12 +51,14 @@ public class ProductServiceImpl implements  ProductService {
     public ProductDto updateProduct(String productId,ProductDto productDto){
         Optional<Product> product =productRepository.findById(productId);
         if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
+        Optional<Category> category =categoryRepository.findById(productDto.getCategoryId());
+        if(category.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Category not found");
         Product updatedProduct = product.get();
         updatedProduct.setProductName(productDto.getProductName());
         updatedProduct.setDescription(productDto.getDescription());
         updatedProduct.setImageUrl(productDto.getImageUrl());
         updatedProduct.setPrice(productDto.getPrice());
-        productDto.setCategoryId(productDto.getCategoryId());
+        updatedProduct.setCategory(category.get());
         return ProductMapper.maptoProductDto(productRepository.save(updatedProduct));
 
     }
@@ -66,6 +68,13 @@ public class ProductServiceImpl implements  ProductService {
         Optional<Product> product =productRepository.findById(productId);
         if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
         return ProductMapper.maptoProductDto(product.get());
+    }
+
+    @Override
+    public Product getProductDetails(String productId) {
+        Optional<Product> product =productRepository.findById(productId);
+        if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
+        return product.get();
     }
 
     @Override

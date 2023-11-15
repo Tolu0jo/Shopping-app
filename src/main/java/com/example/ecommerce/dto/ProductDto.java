@@ -17,7 +17,7 @@ public class ProductDto {
     @NotNull
     private String description;
 
-    @NotNull
+
     private String categoryId;
 
     public String getDescription() {

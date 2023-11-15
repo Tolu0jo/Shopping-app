@@ -11,4 +11,6 @@ public interface UserService {
     SignInResponseDto signIn(SignInDto signInDto);
 
     UserDto getUser(String id);
+
+    User getUserDetails(String id);
 }

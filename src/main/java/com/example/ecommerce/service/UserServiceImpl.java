@@ -12,10 +12,9 @@ import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.TokenRepository;
 import com.example.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -58,13 +57,20 @@ public class UserServiceImpl implements  UserService{
         if(!existingUser.getPassword().equals(signInDto.getPassword())) throw new AuthenticationFailException("Invalid credentials");
         AuthenticationToken token = tokenRepository.findByUser(existingUser);
          if(Objects.isNull(token)) throw new UserException("Token not found");
-       return new SignInResponseDto(token.getToken());
+       return new SignInResponseDto(token.getToken(), existingUser.getId());
     }
 
     @Override
     public UserDto getUser(String id) {
         Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty())throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"User not found");
+        if(user.isEmpty())throw new AuthenticationFailException("User not found");
        return UserMapper.maptoUserDto(user.get());
+    }
+
+    @Override
+    public User getUserDetails(String id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty())throw new AuthenticationFailException("User not found");
+        return user.get();
     }
 }

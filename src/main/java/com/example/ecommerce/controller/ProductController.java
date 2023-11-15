@@ -34,10 +34,11 @@ public class ProductController {
         List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
-    @PostMapping("/add")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto){
+    @PostMapping("/add/{categoryId}")
+    public ResponseEntity<Product> createProduct(@PathVariable("categoryId") String categoryId,
+            @RequestBody ProductDto productDto){
 
-      Product product = productService.createProduct(productDto);
+      Product product = productService.createProduct(categoryId,productDto);
       return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
 

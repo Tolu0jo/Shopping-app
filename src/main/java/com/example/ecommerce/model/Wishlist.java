@@ -1,6 +1,7 @@
 package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -10,13 +11,14 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @Column(name = "user_id")
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @CreationTimestamp
     private Date createdDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -36,13 +38,6 @@ public class Wishlist {
         this.user = user;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
 
     public Product getProduct() {
         return product;
