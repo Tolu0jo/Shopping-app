@@ -9,8 +9,9 @@ public class CartDto {
 
     private int quantity;
 
-    private double totalPrice;
     private double unitPrice;
+    private double totalPrice;
+
 
     public String getId() {
         return id;

@@ -7,4 +7,5 @@ import com.example.ecommerce.dto.CartsDto;
 public interface CartService {
     CartDto addToCart(String userId, AddToCartDto addToCartDto);
     CartsDto getCartItems(String userId);
+    String deleteCartItem(String userId, String cartId);
 }

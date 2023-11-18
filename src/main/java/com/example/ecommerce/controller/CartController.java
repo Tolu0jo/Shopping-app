@@ -31,5 +31,10 @@ private final CartService cartService;
       return ResponseEntity.ok(cartsDto);
     }
 
+    @DeleteMapping("/delete/{userId}/{cartId}")
+   public String deleteCartItem(@PathVariable String cartId,
+                              @PathVariable String userId){
+      return cartService.deleteCartItem(userId,cartId);
+    }
 
 }
