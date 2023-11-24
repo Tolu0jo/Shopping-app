@@ -1,10 +1,11 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.ProductDto;
+import com.example.ecommerce.model.User;
 
 import java.util.List;
 
 public interface WishlistService {
-    ProductDto addWishlist(String userId, String productId);
-    List<ProductDto> getUserWishlist(String userId);
+    ProductDto addWishlist(String productId);
+    List<ProductDto> getUserWishlist();
 }

@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.exceptions.NotFoundException;
 import com.example.ecommerce.model.Category;
 import com.example.ecommerce.repository.CategoryRepository;
 import com.example.ecommerce.service.CategoryService;
@@ -38,13 +39,13 @@ public class CategoryController {
     @GetMapping("/list/{id}")
     public ResponseEntity<Optional<Category>> getCategory(@PathVariable String id){
         Optional<Category> category= categoryService.getCategory(id);
-        if(category.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(category.isEmpty()) throw new NotFoundException("Category does not exist");
         return ResponseEntity.ok(category);
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable String id, @RequestBody Category category){
         Optional<Category> existingCategory = categoryRepository.findById(id);
-         if(existingCategory.isEmpty()) return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+         if(existingCategory.isEmpty()) throw new NotFoundException("Category does not exist");
         Category updatedCategory = categoryService.updateCategory(existingCategory.get(),category);
         return ResponseEntity.ok(updatedCategory);
     }
@@ -52,7 +53,7 @@ public class CategoryController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Category> deleteCategory(@PathVariable String id){
         Optional<Category> existingCategory = categoryRepository.findById(id);
-        if(existingCategory.isEmpty()) return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(existingCategory.isEmpty()) throw new NotFoundException("Category does not exist");
         categoryService.deleteCategory(id);
         return  new ResponseEntity<>(HttpStatus.OK);
     }

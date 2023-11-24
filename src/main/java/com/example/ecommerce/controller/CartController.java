@@ -18,23 +18,20 @@ private final CartService cartService;
         this.cartService = cartService;
     }
 
-    @PostMapping("/addToCart/{userId}")
-    public ResponseEntity<CartDto> addToCart(@PathVariable String userId,
-                                             @RequestBody AddToCartDto addToCartDto){
-      CartDto cartDto = cartService.addToCart(userId,addToCartDto);
+    @GetMapping
+    public ResponseEntity<CartsDto> getCartItems(){
+        CartsDto cartsDto = cartService.getCartItems();
+        return ResponseEntity.ok(cartsDto);
+    }
+    @PostMapping("/addToCart")
+    public ResponseEntity<CartDto> addToCart(@RequestBody AddToCartDto addToCartDto){
+      CartDto cartDto = cartService.addToCart(addToCartDto);
     return ResponseEntity.ok(cartDto);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<CartsDto> getCartItems(@PathVariable("userId") String userId){
-      CartsDto cartsDto = cartService.getCartItems(userId);
-      return ResponseEntity.ok(cartsDto);
-    }
-
-    @DeleteMapping("/delete/{userId}/{cartId}")
-   public String deleteCartItem(@PathVariable String cartId,
-                              @PathVariable String userId){
-      return cartService.deleteCartItem(userId,cartId);
+    @DeleteMapping("/delete/{cartId}")
+   public String deleteCartItem(@PathVariable String cartId){
+      return cartService.deleteCartItem(cartId);
     }
 
 }

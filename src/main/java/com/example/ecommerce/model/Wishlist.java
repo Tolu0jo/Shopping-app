@@ -1,22 +1,28 @@
 package com.example.ecommerce.model;
 
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity(name="wishlist")
 public class Wishlist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+
 
     @CreationTimestamp
     private Date createdDate;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
@@ -38,6 +44,13 @@ public class Wishlist {
         this.user = user;
     }
 
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 
     public Product getProduct() {
         return product;

@@ -1,11 +1,15 @@
-package com.example.ecommerce.service;
+package com.example.ecommerce.service.impl;
 
 import com.example.ecommerce.dto.ProductDto;
+import com.example.ecommerce.exceptions.NotFoundException;
 import com.example.ecommerce.mappers.ProductMapper;
 import com.example.ecommerce.model.Category;
 import com.example.ecommerce.model.Product;
+import com.example.ecommerce.repository.CartRepository;
 import com.example.ecommerce.repository.CategoryRepository;
 import com.example.ecommerce.repository.ProductRepository;
+import com.example.ecommerce.repository.WishlistRepository;
+import com.example.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -16,13 +20,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements  ProductService {
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+
+    private final WishlistRepository wishlistRepository;
+
+    private final CartRepository cartRepository;
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, WishlistRepository wishlistRepository, CartRepository cartRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.wishlistRepository = wishlistRepository;
+        this.cartRepository = cartRepository;
     }
 
 
@@ -30,7 +40,7 @@ public class ProductServiceImpl implements  ProductService {
     public Product createProduct(String categoryId,ProductDto productDto) {
 
         Optional<Category> existingCategory= categoryRepository.findById(categoryId);
-        if(existingCategory.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Category not found");
+        if(existingCategory.isEmpty()) throw new NotFoundException("Category does not exist");
         Product product = new Product();
         product.setProductName(productDto.getProductName());
         product.setDescription(productDto.getDescription());
@@ -50,9 +60,9 @@ public class ProductServiceImpl implements  ProductService {
     @Override
     public ProductDto updateProduct(String productId,ProductDto productDto){
         Optional<Product> product =productRepository.findById(productId);
-        if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
+        if(product.isEmpty()) throw new NotFoundException("Product does not exist");
         Optional<Category> category =categoryRepository.findById(productDto.getCategoryId());
-        if(category.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Category not found");
+        if(category.isEmpty()) throw new NotFoundException("Category does not exist");
         Product updatedProduct = product.get();
         updatedProduct.setProductName(productDto.getProductName());
         updatedProduct.setDescription(productDto.getDescription());
@@ -73,15 +83,24 @@ public class ProductServiceImpl implements  ProductService {
     @Override
     public Product getProductDetails(String productId) {
         Optional<Product> product =productRepository.findById(productId);
-        if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
+        if(product.isEmpty()) throw new NotFoundException("Product does not exist");
         return product.get();
     }
 
     @Override
     public void deleteProduct(String productId){
         Optional<Product> product =productRepository.findById(productId);
-        if(product.isEmpty()) throw new HttpClientErrorException(HttpStatusCode.valueOf(404),"Product not found");
-        productRepository.deleteById(productId);
+        if(product.isEmpty()) throw new NotFoundException("Product does not exist");
+
+
+
+
+        cartRepository.deleteAll(cartRepository.findAllByProduct(product.get()));
+
+        wishlistRepository.deleteAll(wishlistRepository.findAllByProduct(product.get()));
+
+
+        productRepository.delete(product.get());
     }
 
 

@@ -6,11 +6,12 @@ import com.example.ecommerce.dto.SignUpDto;
 import com.example.ecommerce.dto.UserDto;
 import com.example.ecommerce.model.User;
 
-public interface UserService {
+public interface AuthService {
     SignUpDto signUp(SignUpDto signUpDto);
     SignInResponseDto signIn(SignInDto signInDto);
 
     UserDto getUser(String id);
 
     User getUserDetails(String id);
+    SignUpDto signUpAdmin(SignUpDto signUpDto);
 }
